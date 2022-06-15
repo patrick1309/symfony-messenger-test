@@ -1,0 +1,40 @@
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Symfony Messenger{% endblock %}
+
+{% block body %}    
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form(form) }}
+
+    <h3>Tâches échouées</h3>
+
+    <ul>
+        {% for job in jobs %}
+            <li>
+                <h4>{{ job.title }}</h4>
+
+                <pre>
+                    {{ job.trace }}
+                </pre>
+
+                <form action="{{ path('job_delete', {id: job.id}) }}" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger">Supprimer</button>
+                </form>
+
+                <form action="{{ path('job_retry', {id: job.id}) }}" method="POST">
+                    <button class="btn btn-secondary">Relancer</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    
+{% endblock %}
